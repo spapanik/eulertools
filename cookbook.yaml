@@ -1,7 +1,6 @@
 $globals:
   shell: bash
-  version: "5.2"
-  new_order: true
+  version: "6.0"
   vars:
     poetry_sync: "--sync"
 

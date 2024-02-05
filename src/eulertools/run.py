@@ -71,7 +71,8 @@ class Run:
                     f"🔴 Running {language.name}/{problem}... Cannot parse `{line}`.",
                     file=sys.stderr,
                 )
-                raise FailedRunError(f"Unsuccessful run of {language.name}/{problem}")
+                msg = f"Unsuccessful run of {language.name}/{problem}"
+                raise FailedRunError(msg)
         expected_answers = self.expected_answers.setdefault(problem, {})
         if missing_answers := {
             answer for answer in expected_answers if answer not in actual_answers
@@ -80,7 +81,8 @@ class Run:
                 f"🔴 Running {language.name}/{problem}... Missing answers with keys {missing_answers}.",
                 file=sys.stderr,
             )
-            raise FailedRunError(f"Unsuccessful run of {language.name}/{problem}")
+            msg = f"Unsuccessful run of {language.name}/{problem}"
+            raise FailedRunError(msg)
         success = True
         for key, values in actual_answers.items():
             value = values.pop()
@@ -105,5 +107,6 @@ class Run:
             elif self.mode != Modes.TIMING:
                 print(f"🟢 Running {language.name}/{problem}/{key}... {value}")
         if not success:
-            raise FailedRunError(f"Unsuccessful run of {language.name}/{problem}")
+            msg = f"Unsuccessful run of {language.name}/{problem}"
+            raise FailedRunError(msg)
         return timings

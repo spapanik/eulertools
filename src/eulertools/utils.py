@@ -245,7 +245,8 @@ def filter_languages(parsed_languages: list[str] | None) -> list[Language]:
     language_names = {language.name for language in all_languages}
     for language in parsed_languages:
         if language not in language_names:
-            raise InvalidLanguageError(f"{language} is not a valid language")
+            msg = f"{language} is not a valid language"
+            raise InvalidLanguageError(msg)
         filtered_languages.append(Language.from_settings(language))
     return filtered_languages
 
@@ -260,11 +261,9 @@ def filter_problems(
     for problem in parsed_problems:
         if problem not in all_problems:
             if languages is None:
-                raise InvalidProblemError(
-                    f"{problem} is not a valid problem for any language"
-                )
-            raise InvalidProblemError(
-                f"{problem} is not a valid problem for {', '.join(language.name for language in languages)}"
-            )
+                msg = f"{problem} is not a valid problem for any language"
+                raise InvalidProblemError(msg)
+            msg = f"{problem} is not a valid problem for {', '.join(language.name for language in languages)}"
+            raise InvalidProblemError(msg)
         filtered_problems.append(problem)
     return filtered_problems
