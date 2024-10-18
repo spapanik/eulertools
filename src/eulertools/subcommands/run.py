@@ -81,7 +81,7 @@ class Run:
         )
         output = result.stdout.decode()
         error = result.stderr.decode()
-        if self.verbosity > 3:
+        if self.verbosity > 3:  # noqa: PLR2004
             if output:
                 print(output)
             if error:

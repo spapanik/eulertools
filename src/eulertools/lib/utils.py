@@ -210,7 +210,7 @@ class Version:
         version = re.sub("[^.0-9].*", "", version)
         if version.endswith("."):
             version += "0"
-        while version.count(".") < 2:
+        while version.count(".") < 2:  # noqa: PLR2004
             version += ".0"
         major, minor, patch, *_ = map(int, version.split("."))
         return cls(major, minor, patch)
@@ -399,7 +399,7 @@ def update_summary(summary: Summary) -> None:
 def get_average(values: list[Timing]) -> Timing:
     if not values:
         return Timing()
-    if len(values) >= 3:
+    if len(values) >= 3:  # noqa: PLR2004
         values = sorted(values)[1:-1]
     return sum(values, start=Timing()) // len(values)
 
