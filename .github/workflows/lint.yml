@@ -1,4 +1,4 @@
-name: tests
+name: lint
 
 on:
   push:
@@ -12,7 +12,7 @@ env:
   PYTHONUTF8: 1
 
 jobs:
-  unittest-python:
+  lint-python:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -53,17 +53,7 @@ jobs:
           "$PWD/.venv/Scripts" | Out-File -FilePath $env:GITHUB_PATH -Append
       - name: Install dependencies
         run: |
-          yam install -g main -g test
-      - name: Test the project
+          yam install -g main -g lint -g test
+      - name: Lint the project
         run: |
-          yam -e tests --cov --cov-report=xml --junitxml=junit.xml -o junit_family=legacy
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          slug: spapanik/yamk
-      - name: Upload test results to Codecov
-        if: ${{ !cancelled() }}
-        uses: codecov/test-results-action@v1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          yam -e lint
