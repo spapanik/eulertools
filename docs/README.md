@@ -35,7 +35,7 @@ please view the detailed [Documentation].
 [test_badge]: https://github.com/spapanik/eulertools/actions/workflows/tests.yml/badge.svg
 [test_url]: https://github.com/spapanik/eulertools/actions/workflows/tests.yml
 [licence_badge]: https://img.shields.io/pypi/l/eulertools
-[licence_url]: https://github.com/spapanik/eulertools/blob/main/docs/LICENSE.md
+[licence_url]: https://eulertools.readthedocs.io/en/stable/LICENSE/
 [pypi_badge]: https://img.shields.io/pypi/v/eulertools
 [pypi_url]: https://pypi.org/project/eulertools
 [pepy_badge]: https://pepy.tech/badge/eulertools
@@ -47,7 +47,7 @@ please view the detailed [Documentation].
 [ruff_badge]: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v1.json
 [ruff_url]: https://github.com/charliermarsh/ruff
 [Documentation]: https://eulertools.readthedocs.io/en/stable/
-[Changelog]: https://github.com/spapanik/eulertools/blob/main/docs/CHANGELOG.md
+[Changelog]: https://eulertools.readthedocs.io/en/stable/CHANGELOG/
 [Project Euler]: https://projecteuler.net/
 [leetcode]: https://leetcode.com/
 [topcoder]: https://www.topcoder.com/
