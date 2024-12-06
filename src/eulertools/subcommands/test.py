@@ -1,19 +1,21 @@
 import sys
 from collections.abc import Sequence
 
-from eulertools.lib.constants import CaseResult, ParseResult
+from pyutilkit.term import SGROutput
+
+from eulertools.lib.constants import CaseResult, ParseResult, Prefix
 from eulertools.lib.utils import Language, Problem, Summary
 from eulertools.subcommands.run import Run
 
 
 class Test:
     __slots__ = (
-        "success",
+        "extra",
         "languages",
         "problems",
+        "success",
         "times",
         "verbosity",
-        "extra",
     )
 
     def __init__(
@@ -54,15 +56,19 @@ class Test:
         problem_summary = summary.problems[problem]
         parse_result = problem_summary.result[language]
         if parse_result == ParseResult.FAILURE:
-            print(
-                f"🔴 Testing {language.name} // {problem.id}... Failed to parse results",
-                file=sys.stderr,
-            )
+            SGROutput(
+                [
+                    Prefix.FAILURE,
+                    f"Testing {language.name} // {problem.id}...",
+                    "Failed to parse results",
+                ],
+                is_error=True,
+            ).print()
             return
         for case_id, case_summary in sorted(problem_summary.cases.items()):
             case_key = case_id.case_key
             result = case_summary.result[language]
-            test_text = f"Testing {language.name} // {problem.id} // {case_key}..."
+            test_text = f"Testing {language.name} // {problem.id} // {case_key}... "
             answer = case_summary.answer
             try:
                 new_answers = case_summary.new_answers[language]
@@ -71,15 +77,22 @@ class Test:
             else:
                 new_answer = next(iter(new_answers))
             if result == CaseResult.MISSING_KEY:
-                print(f"🔴 {test_text} Missing answer", file=sys.stderr)
+                SGROutput([Prefix.FAILURE, test_text, "Missing answer"], is_error=True)
             elif case_summary.result[language] == CaseResult.NON_DETERMINISTIC:
-                print(f"🔴 {test_text} Not deterministic answer", file=sys.stderr)
+                SGROutput(
+                    [Prefix.FAILURE, test_text, "Not deterministic answer"],
+                    is_error=True,
+                )
             elif case_summary.result[language] == CaseResult.NEW_RESPONSE:
-                print(f"🟠 {test_text} new response")
+                SGROutput([Prefix.WARNING, test_text, "new response"])
             elif case_summary.result[language] == CaseResult.WRONG_RESPONSE:
-                print(
-                    f"🔴 {test_text} expected: `{answer}`, got: `{new_answer}`",
-                    file=sys.stderr,
+                SGROutput(
+                    [
+                        Prefix.FAILURE,
+                        test_text,
+                        f"expected: `{answer}`, got: `{new_answer}`",
+                    ],
+                    is_error=True,
                 )
             elif case_summary.result[language] == CaseResult.SUCCESS:
-                print(f"🟢 {test_text} success")
+                SGROutput([Prefix.SUCCESS, test_text, "success"])

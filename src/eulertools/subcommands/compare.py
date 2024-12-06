@@ -1,16 +1,18 @@
 from collections.abc import Iterator
 
+from pyutilkit.term import SGROutput
+
 from eulertools.lib.constants import CASE_KEY, MISSING, PROBLEM
 from eulertools.lib.utils import Language, Problem, format_cell, get_summary
 
 
 class Compare:
     __slots__ = (
+        "case_ids",
         "languages",
+        "pad_length",
         "problems",
         "summary",
-        "case_ids",
-        "pad_length",
     )
 
     def __init__(self, languages: list[Language], problems: list[Problem]) -> None:
@@ -46,19 +48,15 @@ class Compare:
         n = len(self.languages) + 2
         cell_length = max(len(cell) for row in table for cell in row) + 2
         spacing = ["─" * cell_length for _ in range(n)]
-        top = "┌" + "┬".join(spacing) + "┐"
-        mid = "├" + "┼".join(spacing) + "┤"
-        btm = "└" + "┴".join(spacing) + "┘"
-        print(top)
+        top = SGROutput(["┌", "┬".join(spacing), "┐"])
+        mid = SGROutput(["├", "┼".join(spacing), "┤"])
+        btm = SGROutput(["└", "┴".join(spacing), "┘"])
+        top.print()
         for i, row in enumerate(table):
             if i % 4 == 1:
-                print(mid)
-            print(
-                "│",
-                "│".join(
-                    format_cell(item, cell_length, is_header=(i == 0)) for item in row
-                ),
-                "│",
-                sep="",
+                mid.print()
+            inner_row = "│".join(
+                format_cell(item, cell_length, is_header=(i == 0)) for item in row
             )
-        print(btm)
+            SGROutput(["│", inner_row, "│"]).print()
+        btm.print()

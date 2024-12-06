@@ -1,7 +1,9 @@
 import sys
 from collections.abc import Sequence
 
-from eulertools.lib.constants import CaseResult, ParseResult, UpdateMode
+from pyutilkit.term import SGROutput
+
+from eulertools.lib.constants import CaseResult, ParseResult, Prefix, UpdateMode
 from eulertools.lib.utils import Language, Problem, Summary, get_average, update_summary
 from eulertools.subcommands.run import Run
 
@@ -9,13 +11,13 @@ from eulertools.subcommands.run import Run
 class Time:
 
     __slots__ = (
-        "success",
+        "extra",
         "languages",
         "problems",
+        "success",
         "times",
-        "verbosity",
         "update_mode",
-        "extra",
+        "verbosity",
     )
 
     def __init__(
@@ -62,62 +64,78 @@ class Time:
         problem_summary = summary.problems[problem]
         parse_result = problem_summary.result[language]
         if parse_result == ParseResult.FAILURE:
-            print(
-                f"🔴 Timing {language.name} // {problem.id}... Failed to parse results",
-                file=sys.stderr,
-            )
+            SGROutput(
+                [
+                    Prefix.FAILURE,
+                    f"Timing {language.name} // {problem.id}... ",
+                    "Failed to parse results",
+                ],
+                is_error=True,
+            ).print()
             return
         for case_id, case_summary in problem_summary.cases.items():
             case_key = case_id.case_key
-            time_text = f"Timing {language.name} // {problem.id} // {case_key}..."
+            time_text = f"Timing {language.name} // {problem.id} // {case_key}... "
             if case_summary.result.get(language) in {
                 CaseResult.WRONG_RESPONSE,
                 CaseResult.MISSING_KEY,
                 CaseResult.NON_DETERMINISTIC,
             }:
-                print(f"🔴 {time_text}... Unsuccessful run", file=sys.stderr)
+                SGROutput(
+                    [Prefix.FAILURE, time_text, "Unsuccessful run"], is_error=True
+                ).print()
                 continue
             old_timing = case_summary.timings.get(language)
             raw_timings = case_summary.new_timings[language]
             new_timing = get_average(raw_timings)
 
             if old_timing is None:
-                general_prefix = "🟠"
+                general_prefix = Prefix.WARNING
                 suffix = f"initial timing: {new_timing}"
             elif old_timing > new_timing:
-                general_prefix = "🟢"
+                general_prefix = Prefix.SUCCESS
                 suffix = f"timing changed from {old_timing} to {new_timing}"
             elif old_timing < new_timing:
-                general_prefix = "🔴"
+                general_prefix = Prefix.FAILURE
                 suffix = f"timing changed from {old_timing} to {new_timing}"
             else:
-                general_prefix = "🔵"
+                general_prefix = Prefix.NO_CHANGE
                 suffix = f"timing remained unchanged at: {new_timing}"
-            print(
-                f"{general_prefix} {time_text} {suffix if self.verbosity == 0 else ''}"
-            )
+            SGROutput(
+                [general_prefix, time_text, suffix if self.verbosity == 0 else ""]
+            ).print()
             if self.verbosity > 0:
-                prefix = "    ⏱️"
+                padding = "    "
+                prefix = "⏱️ "
                 if old_timing:
-                    print(f"{prefix} Old timing: {old_timing}")
-                print(f"{prefix} New timing: {new_timing}")
+                    SGROutput([padding, prefix, "Old timing: ", old_timing]).print()
+                SGROutput([padding, prefix, "New timing: ", new_timing]).print()
                 if old_timing is not None:
                     old_nanoseconds = old_timing.nanoseconds
                     new_nanoseconds = new_timing.nanoseconds
                     change = 100 * (old_nanoseconds - new_nanoseconds) / old_nanoseconds
-                    print(f"    {general_prefix} Performance difference: {change:.2f}%")
+                    SGROutput(
+                        [
+                            padding,
+                            general_prefix,
+                            "Performance difference: ",
+                            f"{change:.2f}%",
+                        ]
+                    ).print()
                 if self.verbosity > 1:
-                    print(f"{prefix} Detailed new timings:")
+                    SGROutput(f"{prefix} Detailed new timings:").print()
                     for i, timing in enumerate(raw_timings):
                         if old_timing is None:
-                            prefix = "         "
+                            prefix = "  "
                         elif timing > old_timing:
-                            prefix = "       ⬆️"
+                            prefix = "⬆️ "
                         elif timing < old_timing:
-                            prefix = "       ⬇️"
+                            prefix = "⬇️ "
                         else:
-                            prefix = "       ↔️"
-                        print(f"{prefix} Run {i + 1} took: {timing}")
+                            prefix = "↔️ "
+                        SGROutput(
+                            [padding * 2, prefix, f"Run {i + 1} took:", timing]
+                        ).print()
 
     def _prepare_summary(
         self, language: Language, problem: Problem, summary: Summary

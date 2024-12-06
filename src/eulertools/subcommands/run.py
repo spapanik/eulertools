@@ -4,7 +4,15 @@ import sys
 from collections.abc import Iterator, Sequence
 from itertools import product
 
-from eulertools.lib.constants import CaseResult, NamedArgType, ParseResult, UpdateMode
+from pyutilkit.term import SGROutput
+
+from eulertools.lib.constants import (
+    CaseResult,
+    NamedArgType,
+    ParseResult,
+    Prefix,
+    UpdateMode,
+)
 from eulertools.lib.utils import (
     CaseId,
     Language,
@@ -20,14 +28,14 @@ from eulertools.lib.utils import (
 
 class Run:
     __slots__ = (
-        "success",
+        "extra",
         "languages",
         "problems",
-        "times",
-        "verbosity",
-        "update_mode",
+        "success",
         "summary",
-        "extra",
+        "times",
+        "update_mode",
+        "verbosity",
     )
 
     def __init__(
@@ -97,7 +105,7 @@ class Run:
                     *self.extra,
                 ]
             )
-            print("🔍 Running command:", command)
+            SGROutput(["🔍 Running command:", command]).print()
         result = subprocess.run(  # noqa: PLW1510, S603
             [runner.path, *runner.args, *problem_args, *time_args, *self.extra],
             capture_output=True,
@@ -106,9 +114,9 @@ class Run:
         error = result.stderr.decode()
         if self.verbosity > 3:  # noqa: PLR2004
             if output:
-                print(output)
+                SGROutput([output]).print()
             if error:
-                print(error, file=sys.stderr)
+                SGROutput([error], is_error=True).print()
         if result.returncode != 0:
             problem_summary.result[language] = ParseResult.FAILURE
             problem_summary.parse_info[language] = ""
@@ -125,7 +133,7 @@ class Run:
                 case_summary = problem_summary.get_or_create_case(case_id)
                 case_summary.new_answers.setdefault(language, set()).add(answer)
             elif line.lower().startswith("debug"):
-                print(f"🔍 {line}")
+                SGROutput(["🔍", line]).print()
             else:
                 problem_summary.result[language] = ParseResult.FAILURE
                 problem_summary.parse_info[language] = line
@@ -148,15 +156,18 @@ class Run:
         parse_result = problem_summary.result[language]
         if parse_result == ParseResult.FAILURE:
             parse_info = problem_summary.parse_info[language]
-            print(
-                f"🔴 Running {language.name} // {problem.id}... Cannot parse `{parse_info}`",
-                file=sys.stderr,
+            SGROutput(
+                [
+                    Prefix.FAILURE,
+                    f"Running {language.name} // {problem.id}... Cannot parse `{parse_info}`",
+                ],
+                is_error=True,
             )
             return
         for case_id, case_summary in sorted(problem_summary.cases.items()):
             case_key = case_id.case_key
             result = case_summary.result[language]
-            run_text = f"Running {language.name} // {problem.id} // {case_key}..."
+            run_text = f"Running {language.name} // {problem.id} // {case_key}... "
             answer = case_summary.answer
             try:
                 new_answers = case_summary.new_answers[language]
@@ -165,18 +176,29 @@ class Run:
             else:
                 new_answer = next(iter(new_answers))
             if result == CaseResult.MISSING_KEY:
-                print(f"🔴 {run_text} Missing answer", file=sys.stderr)
+                SGROutput(
+                    [Prefix.FAILURE, run_text, "Missing answer"], is_error=True
+                ).print()
             elif case_summary.result[language] == CaseResult.NON_DETERMINISTIC:
-                print(f"🔴 {run_text} Not deterministic answer", file=sys.stderr)
+                SGROutput(
+                    [Prefix.FAILURE, run_text, "Not deterministic answer"],
+                    is_error=True,
+                ).print()
             elif case_summary.result[language] == CaseResult.NEW_RESPONSE:
-                print(f"🟠 {run_text} new response: `{new_answer}`")
+                SGROutput(
+                    [Prefix.WARNING, run_text, f"new response: `{new_answer}`"]
+                ).print()
             elif case_summary.result[language] == CaseResult.WRONG_RESPONSE:
-                print(
-                    f"🔴 {run_text} expected: `{answer}`, got: `{new_answer}`",
-                    file=sys.stderr,
-                )
+                SGROutput(
+                    [
+                        Prefix.FAILURE,
+                        run_text,
+                        f"expected: `{answer}`, got: `{new_answer}`",
+                    ],
+                    is_error=True,
+                ).print()
             elif case_summary.result[language] == CaseResult.SUCCESS:
-                print(f"🟢 {run_text} response: `{answer}`")
+                SGROutput([Prefix.SUCCESS, run_text, f"response: `{answer}`"]).print()
 
     def _prepare_summary(self, language: Language, problem: Problem) -> None:
         problem_summary = self.summary.problems[problem]

@@ -1,4 +1,6 @@
-from pyutilkit.term import SGRCodes, SGRString
+import os
+
+from pyutilkit.term import SGRCodes, SGROutput, SGRString
 
 from eulertools.lib.utils import Problem, get_statement
 
@@ -15,23 +17,19 @@ class Statement:
             self._print_statement(problem)
 
     def _print_statement(self, problem: Problem) -> None:
-        statement = get_statement(problem)["common"]
+        statement = get_statement(problem.statement)["common"]
         title = statement.get("title", problem.name)
         self._print_title(title, sgr_codes=[SGRCodes.GREEN])
-        print(statement["description"].strip())
-        print()
+        SGROutput([statement["description"].strip(), os.linesep]).print()
         if self.show_hints:
             if hint := statement.get("hint"):
                 self._print_title(f"Hint for `{title}`", sgr_codes=[SGRCodes.BLUE])
-                print(hint.strip())
-                print()
+                SGROutput([hint.strip(), os.linesep]).print()
             elif hints := statement.get("hints"):
                 self._print_title(f"Hints for `{title}`", sgr_codes=[SGRCodes.BLUE])
-                for hint in hints:
-                    print(hint.strip())
-                print()
+                SGROutput([*(hint.strip() for hint in hints), os.linesep]).print()
 
     @staticmethod
     def _print_title(title: str, sgr_codes: list[SGRCodes]) -> None:
-        print(SGRString(title, params=sgr_codes))
-        print(SGRString("~" * len(title), params=sgr_codes))
+        SGRString(title, params=sgr_codes).print()
+        SGRString("~" * len(title), params=sgr_codes).print()

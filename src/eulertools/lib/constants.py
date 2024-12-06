@@ -37,3 +37,11 @@ class CaseResult(StrEnum):
     WRONG_RESPONSE = auto()
     MISSING_KEY = auto()
     NON_DETERMINISTIC = auto()
+
+
+@unique
+class Prefix(StrEnum):
+    NO_CHANGE = "🔵 "
+    SUCCESS = "🟢 "
+    WARNING = "🟠 "
+    FAILURE = "🔴 "

@@ -118,7 +118,7 @@ class Problem:
         else:
             raise ProblemNotFoundError(name)
         file = statement_dir.joinpath(path)
-        statement = get_config(file)
+        statement = get_statement(file)
         id_ = statement["common"].get("id", path.with_suffix("").as_posix())
         return cls(id=id_, name=name, statement=file)
 
@@ -336,15 +336,11 @@ def get_solution(language: Language, problem: Problem) -> Path:
     return language.solutions_path.joinpath(problem.name).with_suffix(language.suffix)
 
 
-def get_config(path: Path) -> dict[str, Any]:
+def get_statement(path: Path) -> dict[str, Any]:  # type: ignore[misc]
     return ConfigParser([path]).data
 
 
-def get_statement(problem: Problem) -> dict[str, Any]:
-    return ConfigParser([problem.statement]).data
-
-
-def get_settings() -> dict[str, Any]:
+def get_settings() -> dict[str, Any]:  # type: ignore[misc]
     settings_root = _get_settings_root()
     base_path = _get_settings_root().joinpath("euler")
     settings = [base_path.with_suffix(suffix) for suffix in SUPPORTED_SUFFIXES]
@@ -392,8 +388,8 @@ def get_summary() -> Summary:
     return summary
 
 
-def get_context(language: Language, problem: Problem) -> dict[str, str]:
-    statement = get_statement(problem)
+def get_context(language: Language, problem: Problem) -> dict[str, Any]:  # type: ignore[misc]
+    statement = get_statement(problem.statement)
     output = {"problem": problem.id}
     output |= statement.get(language.name, {})
     return output
@@ -435,7 +431,7 @@ def get_all_problems(languages: set[str]) -> dict[str, Problem]:
         if not file.is_file():
             continue
         problem = Problem.from_path(file, statement_dir)
-        statement = get_config(file)
+        statement = get_statement(file)
         if any(statement.get(language) is not None for language in languages):
             if problem.id in output:
                 raise DuplicateProblemError(problem.id)
