@@ -9,13 +9,13 @@ from eulertools.subcommands.run import Run
 class Time:
 
     __slots__ = (
-        "success",
+        "extra",
         "languages",
         "problems",
+        "success",
         "times",
-        "verbosity",
         "update_mode",
-        "extra",
+        "verbosity",
     )
 
     def __init__(

@@ -8,12 +8,12 @@ from eulertools.subcommands.run import Run
 
 class Test:
     __slots__ = (
-        "success",
+        "extra",
         "languages",
         "problems",
+        "success",
         "times",
         "verbosity",
-        "extra",
     )
 
     def __init__(

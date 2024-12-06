@@ -6,11 +6,11 @@ from eulertools.lib.utils import Language, Problem, format_cell, get_summary
 
 class Compare:
     __slots__ = (
+        "case_ids",
         "languages",
+        "pad_length",
         "problems",
         "summary",
-        "case_ids",
-        "pad_length",
     )
 
     def __init__(self, languages: list[Language], problems: list[Problem]) -> None:

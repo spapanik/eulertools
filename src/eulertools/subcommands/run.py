@@ -20,14 +20,14 @@ from eulertools.lib.utils import (
 
 class Run:
     __slots__ = (
-        "success",
+        "extra",
         "languages",
         "problems",
-        "times",
-        "verbosity",
-        "update_mode",
+        "success",
         "summary",
-        "extra",
+        "times",
+        "update_mode",
+        "verbosity",
     )
 
     def __init__(
