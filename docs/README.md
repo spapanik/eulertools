@@ -4,6 +4,8 @@
 [![lint][lint_badge]][lint_url]
 [![tests][test_badge]][test_url]
 [![license][licence_badge]][licence_url]
+[![codecov][codecov_badge]][codecov_url]
+[![readthedocs][readthedocs_badge]][readthedocs_url]
 [![pypi][pypi_badge]][pypi_url]
 [![downloads][pepy_badge]][pepy_url]
 [![code style: black][black_badge]][black_url]
@@ -36,6 +38,10 @@ please view the detailed [Documentation].
 [test_url]: https://github.com/spapanik/eulertools/actions/workflows/tests.yml
 [licence_badge]: https://img.shields.io/pypi/l/eulertools
 [licence_url]: https://eulertools.readthedocs.io/en/stable/LICENSE/
+[codecov_badge]: https://codecov.io/github/spapanik/eulertools/graph/badge.svg?token=Q20F84BW72
+[codecov_url]: https://codecov.io/github/spapanik/eulertools
+[readthedocs_badge]: https://readthedocs.org/projects/eulertools/badge/?version=latest
+[readthedocs_url]: https://eulertools.readthedocs.io/en/latest/
 [pypi_badge]: https://img.shields.io/pypi/v/eulertools
 [pypi_url]: https://pypi.org/project/eulertools
 [pepy_badge]: https://pepy.tech/badge/eulertools
