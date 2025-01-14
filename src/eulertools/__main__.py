@@ -4,7 +4,7 @@ from eulertools.subcommands.generate import Generate
 from eulertools.subcommands.run import Run
 from eulertools.subcommands.statement import Statement
 from eulertools.subcommands.test import Test
-from eulertools.subcommands.time import Time
+from eulertools.subcommands.timing import Time
 
 
 def main() -> None:
