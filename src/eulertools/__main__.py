@@ -1,4 +1,4 @@
-from eulertools.lib.parser import parse_args
+from eulertools.lib.cli import parse_args
 from eulertools.subcommands.compare import Compare
 from eulertools.subcommands.generate import Generate
 from eulertools.subcommands.run import Run

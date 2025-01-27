@@ -98,7 +98,7 @@ def parse_args() -> Namespace:
         parsed_languages = set(args.languages)
         args.problems = filter_problems(parsed_problems, parsed_languages)
         args.languages = filter_languages(parsed_languages)
-    elif hasattr(args, "problems"):
+    elif hasattr(args, "problems"):  # pragma: no branch
         parsed_problems = set(args.problems)
         args.problems = filter_problems(parsed_problems, set())
     if extra and extra[0] == "--":
