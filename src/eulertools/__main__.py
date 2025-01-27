@@ -36,5 +36,5 @@ def main() -> None:
             ).run()
         case "compare":
             Compare(args.languages, args.problems).run()
-        case "statement":
+        case "statement":  # pragma: no branch
             Statement(args.problems, show_hints=args.show_hints).run()
