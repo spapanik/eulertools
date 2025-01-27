@@ -1,35 +1,17 @@
 # Installation
 
-## Officially Supported Method: Using pipx
+# Using uv
 
-We recommend using [pipx] for the installation of `eulertools` as it provides
+We recommend using [uv] for the installation of `cloninator` as it provides
 an isolated environment for the package, preventing any dependency conflicts.
 
-To install `eulertools` using pipx, run the following command in your terminal:
+The minimum python version needed is `3.11` but as uv is used, version 3.13
+is preferred.
+
+To install `eulertools` using uv, run the following command in your terminal:
 
 ```console
-$ pipx install eulertools
+$ uv tool install --python 3.13 eulertools
 ```
 
-## Alternative Method: Using pip
-
-As an alternative, you can use [pip] to install `eulertools`.
-However, this method does not provide an isolated environment for the package,
-which may lead to dependency conflicts or leave your system in an inconsistent state.
-Therefore, this method is not recommended or supported.
-
-To install `eulertools` using pip, run the following command in your terminal:
-
-```console
-$ pip install --user eulertools
-```
-
-## Python Version Requirement
-
-Please note that `eulertools` requires Python 3.11 or higher. Please ensure
-that your system is using the correct Python version. If not,
-consider using a tool like [pyenv] to create a shell with the required Python version.
-
-[pip]: https://pip.pypa.io/en/stable/
-[pipx]: https://pypa.github.io/pipx/
-[pyenv]: https://github.com/pyenv/pyenv
+[uv]: https://github.com/astral-sh/uv
