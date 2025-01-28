@@ -159,7 +159,8 @@ class Run:
             SGROutput(
                 [
                     Prefix.FAILURE,
-                    f"Running {language.name} // {problem.id}... Cannot parse `{parse_info}`",
+                    f"Running {language.name} // {problem.id}... "
+                    f"Cannot parse `{parse_info}`",
                 ],
                 is_error=True,
             )
