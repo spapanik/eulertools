@@ -9,7 +9,6 @@ from eulertools.subcommands.run import Run
 
 
 class Time:
-
     __slots__ = (
         "extra",
         "languages",
