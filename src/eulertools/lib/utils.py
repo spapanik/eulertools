@@ -336,11 +336,11 @@ def get_solution(language: Language, problem: Problem) -> Path:
     return language.solutions_path.joinpath(problem.name).with_suffix(language.suffix)
 
 
-def get_statement(path: Path) -> dict[str, Any]:  # type: ignore[misc]
+def get_statement(path: Path) -> dict[str, Any]:  # type: ignore[explicit-any]
     return ConfigParser([path]).data
 
 
-def get_settings() -> dict[str, Any]:  # type: ignore[misc]
+def get_settings() -> dict[str, Any]:  # type: ignore[explicit-any]
     settings_root = _get_settings_root()
     base_path = _get_settings_root().joinpath("euler")
     settings = [base_path.with_suffix(suffix) for suffix in SUPPORTED_SUFFIXES]
@@ -388,7 +388,7 @@ def get_summary() -> Summary:
     return summary
 
 
-def get_context(language: Language, problem: Problem) -> dict[str, Any]:  # type: ignore[misc]
+def get_context(language: Language, problem: Problem) -> dict[str, Any]:  # type: ignore[explicit-any]
     statement = get_statement(problem.statement)
     output = {"problem": problem.id}
     output |= statement.get(language.name, {})
