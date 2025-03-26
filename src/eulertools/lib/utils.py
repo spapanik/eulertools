@@ -6,9 +6,9 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Self
 
-import yaml
 from dj_settings import ConfigParser
 from pyutilkit.timing import Timing
+from ruamel.yaml import YAML
 
 from eulertools.__version__ import __version__
 from eulertools.lib.constants import (
@@ -166,6 +166,24 @@ class ProblemSummary:
             case_summary = CaseSummary(case_id=case_id, timings={})
             self.cases[case_id] = case_summary
         return case_summary
+
+    def get_languages(self) -> list[Language]:
+        return sorted(
+            language for case in self.cases.values() for language in case.timings
+        )
+
+    def populate(self, results_file: Path, languages: list[Language]) -> None:
+        yaml = YAML(typ="safe")
+        with results_file.open() as file:
+            data = yaml.load(file)
+        for case_key, case_info in data.items():
+            case_id = CaseId(problem=self.problem, case_key=case_key)
+            case_summary = self.get_or_create_case(case_id)
+            case_summary.answer = case_info[ANSWER]
+            for language in languages:
+                timing = case_info.get(language.name, NULL_STRING)
+                if timing != NULL_STRING:
+                    case_summary.timings[language] = Timing(nanoseconds=int(timing))
 
     def as_dict(self) -> dict[str, dict[str, str | int]]:
         return {
@@ -373,18 +391,9 @@ def get_summary() -> Summary:
     languages = get_all_languages()
     summary = Summary(problems={})
     for results_file in results_dir.rglob("*.yaml"):
-        with results_file.open() as file:
-            data = yaml.safe_load(file)
         problem = Problem.from_path(results_file, results_dir)
         problem_summary = summary.get_or_create_problem(problem)
-        for case_key, case_info in data.items():
-            case_id = CaseId(problem=problem, case_key=case_key)
-            case_summary = problem_summary.get_or_create_case(case_id)
-            case_summary.answer = case_info[ANSWER]
-            for language in languages:
-                timing = case_info.get(language.name, NULL_STRING)
-                if timing != NULL_STRING:
-                    case_summary.timings[language] = Timing(nanoseconds=int(timing))
+        problem_summary.populate(results_file, languages)
     return summary
 
 
@@ -395,13 +404,27 @@ def get_context(language: Language, problem: Problem) -> dict[str, Any]:  # type
     return output
 
 
+def update_results_file(results_file: Path, problem_summary: ProblemSummary) -> None:
+    existing_summary = ProblemSummary(problem=problem_summary.problem, cases={})
+    existing_summary.populate(results_file, problem_summary.get_languages())
+    if existing_summary.as_dict() == problem_summary.as_dict():
+        return
+
+    yaml = YAML(typ="safe")
+    yaml.default_flow_style = False
+    yaml.indent(mapping=2, sequence=4, offset=2)
+
+    with results_file.open("w") as file:
+        yaml.dump(problem_summary.as_dict(), file)
+
+
 def update_summary(summary: Summary) -> None:
     results_dir = _get_summary()
     for problem, problem_summary in summary.problems.items():
         results_file = results_dir.joinpath(f"{problem.name}.yaml")
         results_file.parent.mkdir(parents=True, exist_ok=True)
-        with results_file.open("w+") as file:
-            yaml.dump(problem_summary.as_dict(), file)
+        results_file.touch(exist_ok=True)
+        update_results_file(results_file, problem_summary)
 
 
 def get_average(values: list[Timing]) -> Timing:

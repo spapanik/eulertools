@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog], and this project adheres to [Semantic
 
 ## [Unreleased]
 
+### Fixed
+
+-   Fixed unnecessary rewrites of results files
+
 ## [5.3.0] - 2024-11-01
 
 ### Added
