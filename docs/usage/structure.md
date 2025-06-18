@@ -5,8 +5,8 @@ recursively looks for the project root. The project root is marked by
 the existence of a `.euler` directory. The required files and directories
 inside it are:
 
--   `.euler/euler.toml`
--   `.euler/statements/<problem_name>.toml` for every problem
+- `.euler/euler.toml`
+- `.euler/statements/<problem_name>.toml` for every problem
 
 The problem name
 
@@ -21,11 +21,11 @@ the suffix of the file.
 Each language is a section `[language.<language_name>]`, with the
 following fields:
 
--   extension: \[optional\] the filename extension for the problems solved
-    in this language. Defaults to `./<language_name>`
--   path: \[optional\] the path (relative to the project root)
-    of the language solution. Defaults to `./<language_name>`
--   runner: the path (relative to the project root) of the solution runner
+- extension: \[optional\] the filename extension for the problems solved
+  in this language. Defaults to `./<language_name>`
+- path: \[optional\] the path (relative to the project root)
+  of the language solution. Defaults to `./<language_name>`
+- runner: the path (relative to the project root) of the solution runner
 
 There is a section called `$meta`, that allows to add some info for `eulertools` themselves.
 At the moment, the only field that is used is `__version__`, and specifies the min `eulertools`
