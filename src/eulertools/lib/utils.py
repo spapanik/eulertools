@@ -4,9 +4,10 @@ import csv
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Self
+from typing import TYPE_CHECKING, Any
 
 from dj_settings import ConfigParser
+from exceptiongroup import ExceptionGroup  # upgrade: py3.10: remove import
 from pyutilkit.timing import Timing
 from ruamel.yaml import YAML
 
@@ -34,6 +35,8 @@ from eulertools.lib.exceptions import (
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
+
+    from typing_extensions import Self  # upgrade: py3.10: import from typing
 
 
 @dataclass(frozen=True, slots=True, order=True)
