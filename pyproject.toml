@@ -1,14 +1,12 @@
 [build-system]
 requires = [
-    "phosphorus>=0.10",
+    "uv_build>=0.9.21,<0.10.0",
 ]
-build-backend = "phosphorus.construction.api"
+build-backend = "uv_build"
 
 [project]
 name = "eulertools"
-dynamic = [
-    "version",
-]
+version = "5.3.0"
 
 authors = [
     { name = "Stephanos Kuma", email = "stephanos@kuma.ai" },
@@ -56,9 +54,9 @@ dev = [
     { include-group = "docs" },
 ]
 lint = [
-    "mypy~=1.18",  # Keep mypy for CI/CD
-    "ty~=0.0.1a21",
+    "mypy~=1.19",  # Keep mypy for CI/CD
     "ruff~=0.13",
+    "ty~=0.0.9",
     "typing_extensions~=4.14",  # upgrade: py3.10: remove dependency
     { include-group = "test_core" },
 ]
@@ -76,9 +74,6 @@ docs = [
     "pygments~=2.19",
     "pymdown-extensions~=10.15",
 ]
-
-[tool.phosphorus.dynamic.version]
-file = "src/eulertools/__version__.py"
 
 [tool.mypy]
 # Keep mypy for CI/CD
