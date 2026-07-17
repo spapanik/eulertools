@@ -37,6 +37,56 @@ def test_statement_with_title_and_hint(
 @mock.patch(
     "eulertools.subcommands.statement.get_statement", new_callable=mock.MagicMock
 )
+def test_statement_with_singular_hint(
+    mock_get_statement: mock.MagicMock,
+    problems: list[Problem],
+    capsys: mock.MagicMock,
+) -> None:
+    mock_get_statement.return_value = {
+        "common": {"title": "Title", "description": "Desc", "hint": "Hint"}
+    }
+    statement_command = Statement(problems=problems[:1], show_hints=True)
+    statement_command.run()
+
+    captured = capsys.readouterr()
+    expected_output_lines = [
+        "Title",
+        "~~~~~",
+        "Desc",
+        "",
+        "Hint for `Title`",
+        "~~~~~~~~~~~~~~~~",
+        "Hint",
+    ]
+
+    assert captured.out.strip() == os.linesep.join(expected_output_lines)
+    assert captured.err == ""
+
+
+@mock.patch(
+    "eulertools.subcommands.statement.get_statement", new_callable=mock.MagicMock
+)
+def test_statement_with_hidden_hints(
+    mock_get_statement: mock.MagicMock,
+    problems: list[Problem],
+    capsys: mock.MagicMock,
+) -> None:
+    mock_get_statement.return_value = {
+        "common": {"title": "Title", "description": "Desc", "hint": "Hint"}
+    }
+    statement_command = Statement(problems=problems[:1], show_hints=False)
+    statement_command.run()
+
+    captured = capsys.readouterr()
+    expected_output_lines = ["Title", "~~~~~", "Desc"]
+
+    assert captured.out.strip() == os.linesep.join(expected_output_lines)
+    assert captured.err == ""
+
+
+@mock.patch(
+    "eulertools.subcommands.statement.get_statement", new_callable=mock.MagicMock
+)
 def test_statement_with_title_but_not_hint(
     mock_get_statement: mock.MagicMock,
     problems: list[Problem],

@@ -92,7 +92,7 @@ class Run:
             case NamedArgType.SHORT:
                 problem_args = ["-p", problem_arg]
                 time_args = ["-t", times_arg]
-            case NamedArgType.LONG:
+            case _:
                 problem_args = ["--problem", problem_arg]
                 time_args = ["--times", times_arg]
         if self.verbosity > 3:  # noqa: PLR2004
@@ -198,7 +198,7 @@ class Run:
                     ],
                     is_error=True,
                 ).print()
-            elif case_summary.result[language] == CaseResult.SUCCESS:
+            else:
                 SGROutput([Prefix.SUCCESS, run_text, f"response: `{answer}`"]).print()
 
     def _prepare_summary(self, language: Language, problem: Problem) -> None:

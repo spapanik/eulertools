@@ -94,5 +94,5 @@ class Test:
                     ],
                     is_error=True,
                 )
-            elif case_summary.result[language] == CaseResult.SUCCESS:
+            else:
                 SGROutput([Prefix.SUCCESS, test_text, "success"])

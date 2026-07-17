@@ -58,7 +58,7 @@ class Runner:
             runner_path = project_root.joinpath(common_runner)
         else:
             runner_path = path.joinpath(language["runner"])
-        runner_args = language.get("runner_args", [])
+        runner_args = tuple(language.get("runner_args", []))
         use_ids = common.get("use_ids", True)
         named_args = common.get("named_arg_type", "none").lower()
         try:
@@ -122,7 +122,7 @@ class Problem:
             raise ProblemNotFoundError(name)
         file = statement_dir.joinpath(path)
         statement = get_statement(file)
-        id_ = statement["common"].get("id", path.with_suffix("").as_posix())
+        id_ = statement["common"].get("id", name)
         return cls(id=id_, name=name, statement=file)
 
     @classmethod
@@ -178,7 +178,7 @@ class ProblemSummary:
     def populate(self, results_file: Path, languages: list[Language]) -> None:
         yaml = YAML(typ="safe")
         with results_file.open() as file:
-            data = yaml.load(file)
+            data = yaml.load(file) or {}
         for case_key, case_info in data.items():
             case_id = CaseId(problem=self.problem, case_key=case_key)
             case_summary = self.get_or_create_case(case_id)
@@ -316,7 +316,7 @@ def _create_summary(file: Path) -> None:
     file.mkdir()
     if _get_settings_root().joinpath("answers.txt").exists():
         summary = _get_txt_summary()
-    if _get_settings_root().joinpath("results.csv").exists():
+    elif _get_settings_root().joinpath("results.csv").exists():
         summary = _get_csv_summary()
     else:
         summary = Summary(problems={})
