@@ -4,10 +4,9 @@ import csv
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Self
 
 from dj_settings import ConfigParser
-from exceptiongroup import ExceptionGroup  # upgrade: py3.10: remove import
 from pyutilkit.timing import Timing
 from ruamel.yaml import YAML
 
@@ -35,8 +34,6 @@ from eulertools.lib.exceptions import (
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
-
-    from typing_extensions import Self  # upgrade: py3.10: import from typing
 
 
 @dataclass(frozen=True, slots=True, order=True)
@@ -358,14 +355,14 @@ def get_solution(language: Language, problem: Problem) -> Path:
 
 
 def get_statement(path: Path) -> dict[str, Any]:  # type: ignore[explicit-any]
-    return ConfigParser([path]).data
+    return ConfigParser(path).data
 
 
 def get_settings() -> dict[str, Any]:  # type: ignore[explicit-any]
     settings_root = _get_settings_root()
     base_path = _get_settings_root().joinpath("euler")
     settings = [base_path.with_suffix(suffix) for suffix in SUPPORTED_SUFFIXES]
-    data = ConfigParser(settings).data
+    data = ConfigParser(*settings).data
     version_string = data.get("$meta", {}).get("version")
     if version_string is None:
         raise MissingVersionError(settings_root)

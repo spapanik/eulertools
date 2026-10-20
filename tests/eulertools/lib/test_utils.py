@@ -1,7 +1,6 @@
 from pathlib import Path
 
 import pytest
-from exceptiongroup import ExceptionGroup  # upgrade: py3.10: remove import
 from pyutilkit.timing import Timing
 
 from eulertools.lib import utils
