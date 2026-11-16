@@ -39,7 +39,7 @@ please view the detailed [Documentation].
 [licence_url]: https://eulertools.readthedocs.io/en/stable/LICENSE/
 [codecov_badge]: https://codecov.io/github/spapanik/eulertools/graph/badge.svg?token=Q20F84BW72
 [codecov_url]: https://codecov.io/github/spapanik/eulertools
-[readthedocs_badge]: https://readthedocs.org/projects/eulertools/badge/?version=latest
+[readthedocs_badge]: https://app.readthedocs.org/projects/eulertools/badge/?version=latest
 [readthedocs_url]: https://eulertools.readthedocs.io/en/latest/
 [pypi_badge]: https://img.shields.io/pypi/v/eulertools
 [pypi_url]: https://pypi.org/project/eulertools
